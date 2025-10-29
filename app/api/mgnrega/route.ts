@@ -58,22 +58,22 @@ async function fetchFromDataGov(district: string): Promise<MGNREGARecord[]> {
     })
 
     if (!response.ok) {
-      console.error(`[v0] API Error: ${response.status}`)
+      console.error(` API Error: ${response.status}`)
       throw new Error(`API returned status ${response.status}`)
     }
 
     const data = await response.json()
-    console.log(`[v0] Fetched ${data.records?.length || 0} records for ${district}`)
+    console.log(` Fetched ${data.records?.length || 0} records for ${district}`)
     return data.records || []
   } catch (error) {
-    console.error(`[v0] Error fetching from data.gov.in:`, error)
+    console.error(` Error fetching from data.gov.in:`, error)
     throw error
   }
 }
 
 function transformData(records: MGNREGARecord[]): TransformedData | null {
   if (!records || records.length === 0) {
-    console.log("[v0] No records found")
+    console.log(" No records found")
     return null
   }
 
@@ -86,7 +86,7 @@ function transformData(records: MGNREGARecord[]): TransformedData | null {
   const currentRecord = sortedRecords[0]
   const district = currentRecord.district_name || "Unknown"
 
-  console.log(`[v0] Transforming data for ${district}, current month: ${currentRecord.month}`)
+  console.log(` Transforming data for ${district}, current month: ${currentRecord.month}`)
 
   // Get last 6 months of data
   const historicalData = sortedRecords.slice(0, 6).map((record) => ({
@@ -124,7 +124,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "District parameter is required" }, { status: 400 })
     }
 
-    console.log(`[v0] Fetching data for district: ${district}`)
+    console.log(` Fetching data for district: ${district}`)
 
     // Fetch data from data.gov.in
     const records = await fetchFromDataGov(district)
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(transformedData)
   } catch (error) {
-    console.error("[v0] API Error:", error)
+    console.error(" API Error:", error)
     return NextResponse.json({ error: "Failed to fetch data from data.gov.in" }, { status: 500 })
   }
 }
